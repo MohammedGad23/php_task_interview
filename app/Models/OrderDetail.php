@@ -2,11 +2,13 @@
 
 namespace App\Models;
 
+use Carbon\Traits\Timestamp;
 use Illuminate\Database\Eloquent\Model;
 
 class OrderDetail extends Model
 {
     //
+    public $timestamps=false;
     protected $fillable =[
         'amount_to_pay',
         'num_meals',

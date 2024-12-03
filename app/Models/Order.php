@@ -15,4 +15,12 @@ class Order extends Model
         'waiter_id',
         'reservation_id'
     ];
+
+    public function customerOrders(){
+        return $this->belongsTo(Customer::class,'customer_id',);
+    }
+
+    public function orderWaiter(){
+        return $this->belongsTo(Waiter::class,'waiter_id');
+    }
 }

@@ -14,4 +14,13 @@ class Reservation extends Model
         'table_id',
         'customer_id',
     ];
+
+    public function customerReservation(){
+        return $this->belongsTo(Customer::class,'customer_id');
+    }
+
+    public function tableReservation(){
+        return $this->hasMany(Table::class,'id','table_id');
+    }
+
 }

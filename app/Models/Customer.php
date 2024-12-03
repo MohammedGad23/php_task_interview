@@ -11,4 +11,12 @@ class Customer extends Model
         'phone',
         'name',
     ];
+
+    public function customerOrders(){
+        return $this->hasMany(Order::class,'customer_id');
+    }
+
+    public function customerReservation(){
+        return $this->hasMany(Reservation::class,'customer_id');
+    }
 }
