@@ -71,7 +71,7 @@ class MealController extends Controller
         //
         $meal_ = DB::table('meals')->find($meal);
         if(!$meal_){
-            return response()->json(["message" => "this customer not exist in system."], 400);
+            return response()->json(["message" => "this meal not exist in system."], 400);
         }
 
         return new MealResource($meal_);
@@ -93,7 +93,7 @@ class MealController extends Controller
         //
         $meal_ = Meal::find($meal);
         if(!$meal_){
-            return response()->json(["message" => "this customer not exist in system."], 400);
+            return response()->json(["message" => "this meal not exist in system."], 400);
         }
 
         $validator = Validator::make($request->all(), [

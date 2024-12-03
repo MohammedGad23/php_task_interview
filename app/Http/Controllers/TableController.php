@@ -1,7 +1,9 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\DB;
+use App\Http\Resources\TableResource;
 use App\Models\Table;
 use Illuminate\Http\Request;
 
@@ -13,6 +15,9 @@ class TableController extends Controller
     public function index()
     {
         //
+
+        $tables = DB::table('tables')->get();
+        return TableResource::collection($tables);
     }
 
     /**
@@ -29,14 +34,38 @@ class TableController extends Controller
     public function store(Request $request)
     {
         //
+
+        $validator = Validator::make($request->all(), [
+            'capacity'=>['required','numeric']
+
+        ], [
+            'capacity.required'=>'pls sent capacity of table.',
+            'capacity.numeric' => 'capacity must be a numeric.',
+      ]);
+
+        if ($validator->fails()) {
+            return response()->json(["message" => $validator->errors()], 400);
+        }
+
+        Table::create($request->all());
+
+        return response()->json([
+            'message' => 'success added a new table.'
+        ], 200);
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(Table $table)
+    public function show($table)
     {
         //
+        $table_ = DB::table('tables')->find($table);
+        if(!$table_){
+            return response()->json(["message" => "this table not exist in system."], 400);
+        }
+
+        return new TableResource($table_);
     }
 
     /**
@@ -50,9 +79,35 @@ class TableController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Table $table)
+    public function update(Request $request, $table)
     {
         //
+
+        $table_ = Table::find($table);
+        if(!$table_){
+            return response()->json(["message" => "this table not exist in system."], 400);
+        }
+
+        $validator = Validator::make($request->all(), [
+            'capacity'=>['required','numeric']
+
+        ], [
+            'capacity.required'=>'pls sent capacity of table.',
+            'capacity.numeric' => 'capacity must be a numeric.',
+      ]);
+
+        if ($validator->fails()) {
+            return response()->json(["message" => $validator->errors()], 400);
+        }
+
+        $table_->capacity = $request->capacity??$table_->capacity;
+
+        $table_->save();
+
+        return response()->json([
+            'message' => 'success update table.'
+        ], 200);
+
     }
 
     /**
