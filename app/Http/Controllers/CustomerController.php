@@ -82,7 +82,7 @@ class CustomerController extends Controller
     public function update(Request $request, $customer)
     {
         //
-        $customer_ = DB::table('customers')->find($customer);
+        $customer_ = Customer::find($customer);
         if(!$customer_){
             return response()->json(["message" => "this customer not exist in system."], 400);
         }
@@ -99,6 +99,7 @@ class CustomerController extends Controller
         }
         $customer_->name = $request->name??$customer_->name;
         $customer_->phone = $request->phone??$customer_->phone;
+        // return 1;
         $customer_->save();
         return response()->json([
             'message' => 'success updated.'

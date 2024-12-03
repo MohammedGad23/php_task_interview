@@ -14,6 +14,13 @@ class MealResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        return parent::toArray($request);
+        // return parent::toArray($request);
+        return [
+            'id'=>$this->id,
+            'price'=>$this->price,
+            'description'=>$this->description,
+            'quantity_available'=>$this->quantity_available,
+            'discount'=>$this->discount,
+        ];
     }
 }

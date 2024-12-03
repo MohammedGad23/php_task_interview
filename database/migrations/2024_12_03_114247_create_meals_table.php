@@ -13,10 +13,11 @@ return new class extends Migration
     {
         Schema::create('meals', function (Blueprint $table) {
             $table->id();
+            $table->string('name');
             $table->decimal('price');
             $table->text('description')->nullable();
             $table->integer('quantity_available')->default(10);
-            $table->tinyInteger('discount'); // descount in percentage
+            $table->tinyInteger('discount')->default(0); // descount in percentage
             $table->timestamps();
         });
     }
