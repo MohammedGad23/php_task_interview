@@ -17,7 +17,7 @@ return new class extends Migration
             $table->time('to_time');
             $table->date('reservation_date');
             $table->tinyInteger('num_guest');
-            $table->enum('status',['waiting','cancelled'])->default('waiting');
+            $table->enum('status',['waiting','cancelled','notified'])->default('waiting');
             $table->foreignId('customer_id')
                 ->constrained('customers')
                 ->onDelete('cascade')

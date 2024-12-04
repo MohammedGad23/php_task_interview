@@ -1,12 +1,15 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use App\Http\Resources\OrderDetailResource;
+use Carbon\Carbon;
 use App\Models\Order;
 use App\Models\OrderDetail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
+
+use App\Http\Resources\OrderResource;
 class OrderController extends Controller
 {
     /**
@@ -31,7 +34,7 @@ class OrderController extends Controller
     public function store(Request $request)
     {
         //
-        
+
         $validator = Validator::make($request->all(), [
             'table_id' => ['required','exists:tables,id'],
             'waiter_id' => ['required','exists:waiters,id'],
@@ -88,6 +91,36 @@ class OrderController extends Controller
 
     }
 
+    public function checkoutOrder($tableId)
+    {
+        //
+        $invoiceTime = Carbon::now()->addHours(2)->format('H:i:s');
+        // return $invoiceTime;
+
+        $order = DB::table('orders')
+            ->where('reservation_id', function($query) use ($tableId, $invoiceTime) {
+            $query->select('id')
+            ->from('reservations')
+            ->where('table_id', $tableId)
+            ->where('from_time', '<=', $invoiceTime)
+            ->where('to_time', '>=', $invoiceTime);
+        })->first();
+
+
+        if ($order) {
+            DB::table('orders')
+                ->where('id', $order->id)
+                ->update([
+                    'paid' => true,
+                ]);
+
+            return new OrderResource($order);
+        }
+       return response()->json(['message' => 'No order found for the given reservation.']);
+
+
+        // if()
+    }
     /**
      * Display the specified resource.
      */

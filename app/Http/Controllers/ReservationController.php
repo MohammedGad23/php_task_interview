@@ -6,6 +6,7 @@ use App\Models\Reservation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
+use App\Models\WaitingList;
 class ReservationController extends Controller
 {
     /**
@@ -84,8 +85,8 @@ class ReservationController extends Controller
 
         $validator = Validator::make($request->all(), [
             'number_of_guests' => ['required','numeric','min:1'],
-            'from_time' => ['required','date_format:H:i'],
-            'to_time' => ['required','date_format:H:i','after:from_time'],
+            'from_time' => ['required'],//'date_format:H:i'],
+            'to_time' => ['required'],//'date_format:H:i','after:from_time'],
             'reservation_date'=>['required','date'],
             'customer_id'=>['required','exists:customers,id'],
         ], [
@@ -109,7 +110,18 @@ class ReservationController extends Controller
 
         $table_id = $this->checkAvailability($request);
         if($table_id == -1){
-            return response()->json(["message" => "no table exist for this number_of_guests"], 400);
+            $reservation = WaitingList::create([
+                'from_time'=>$request->from_time,
+                'to_time'=>$request->to_time,
+                'reservation_date'=>$request->reservation_date,
+                'customer_id'=>$request->customer_id,
+                'num_guest'=>$request->number_of_guests,
+                'status'=>'waiting',
+            ]);
+            return response()->json([
+                "message" => "no table exist for this number_of_guests",
+                "waiting list"=> "we will added you to witing list."
+            ], 200);
         }
         $reservation = Reservation::create([
             'from_time'=>$request->from_time,
@@ -121,6 +133,7 @@ class ReservationController extends Controller
 
         return $reservation;
     }
+
 
     /**
      * Display the specified resource.

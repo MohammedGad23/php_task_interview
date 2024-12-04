@@ -24,3 +24,5 @@ Route::post('check-availability',[ReservationController::class,'checkAvailabilit
 Route::post('reservation',[ReservationController::class,'store']);
 Route::apiResource('meals',MealController::class);
 Route::apiResource('order',OrderController::class);
+
+Route::get('checkout/{tableId}',[OrderController::class,'checkoutOrder']);

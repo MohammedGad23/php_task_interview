@@ -15,4 +15,8 @@ class OrderDetail extends Model
         'meal_id',
         'order_id',
     ];
+
+    public function meal(){
+        return $this->belongsTo(Meal::class,'meal_id');
+    }
 }
